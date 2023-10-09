@@ -11,38 +11,35 @@ module.exports = {
 
     res.status(200).send({
       error: false,
+      detail: await res.getModelListDetails(Department),
       data, // data: data
     });
   },
+
   create: async (req, res) => {
+    const data = await Department.create(req.body);
 
-    const data = await Department.create(req.body)
-
-      res.status(201).send({
-        error: false,
-        data
-      });
-
+    res.status(201).send({
+      error: false,
+      data,
+    });
   },
   read: async (req, res) => {
-await Department.findOne({_id: req.params.id})
+    const data = await Department.findOne({ _id: req.params.id });
 
-  res.status(200).send({
-    error: false,
-    data
-  });
-
+    res.status(200).send({
+      error: false,
+      data,
+    });
   },
   update: async (req, res) => {
+    const data = await Department.updateOne({ _id: req.params.id }, req.body);
 
-    const data = await Department.updateOne({_id: req.params.id}, req.body)
-
-     res.status(202).send({
-       error: false,
-       data,
-       new: await Department.findOne({ _id: req.params.id }),
-     });
-
+    res.status(202).send({
+      error: false,
+      data,
+      new: await Department.findOne({ _id: req.params.id }),
+    });
   },
   delete: async (req, res) => {
     const data = await Department.deleteOne({ _id: req.params.id });
@@ -58,5 +55,25 @@ await Department.findOne({_id: req.params.id})
     //     error: !isDeleted,
     //     data
     // })
+  },
+
+  personnels: async (req, res) => {
+    const Personnel = require("../models/personnel.model");
+
+    const data = await res.getModelList(
+      Personnel,
+      { departmentId: req.params.id },
+      "departmentId"
+    );
+
+    res.status(200).send({
+      error: false,
+      detail: await res.getModelListDetails(
+        Personnel,
+        { departmentId: req.params.id },
+        "departmentId"
+      ),
+      data,
+    });
   },
 };
